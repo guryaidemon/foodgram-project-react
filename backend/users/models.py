@@ -68,3 +68,31 @@ class CustomUser(AbstractUser):
     @property
     def is_admin(self):
         return self.role == ADMIN
+
+
+class Follow(models.Model):
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='follower',
+        verbose_name='Подписчик',
+        help_text='Подписчик на автора рецепта'
+    )
+    author = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='followed',
+        verbose_name='Автор',
+        help_text='Автор рецепта'
+    )
+
+    class Meta:
+        ordering = ['-id']
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'author'],
+                name='unique follow',
+            )
+        ]

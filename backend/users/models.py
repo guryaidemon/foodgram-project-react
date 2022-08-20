@@ -5,8 +5,14 @@ from backend.users.validators import UsernameValidator
 
 ADMIN = 'admin'
 USER = 'user'
+USERNAME_FIELD = 'email'
 
-
+REQUIRED_FIELDS = [
+    'username',
+    'password',
+    'first_name',
+    'last_name'
+]
 ROLE_CHOICES = [
     (ADMIN, ADMIN),
     (USER, USER),
@@ -92,7 +98,7 @@ class Follow(models.Model):
         verbose_name_plural = 'Подписки'
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'author'],
-                name='unique follow',
+                fields=['author', 'user'],
+                name='unique_object'
             )
         ]

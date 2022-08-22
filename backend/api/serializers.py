@@ -65,7 +65,8 @@ class UserSubscribeSerializer(serializers.ModelSerializer, IsSubscribedMixin):
         subscribe.save()
         return subscribe
 
-    def get_recipes_count(self, data):
+    @staticmethod
+    def get_recipes_count(data):
         return Recipe.objects.filter(author=data).count()
 
     def get_recipes(self, data):
@@ -156,24 +157,18 @@ class RecipeSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if request is None or request.user.is_anonymous:
             return False
-        try:
-            user = self.context.get('request').user
-        except:
-            user = self.context.get('user')
+        user = self.context.get('request').user
         callname_function = format(traceback.extract_stack()[-2][2])
         if callname_function == 'get_is_favorited':
-            init_queryset = FavoriteRecipe.objects.filter(
+            FavoriteRecipe.objects.filter(
                 recipe=data.id,
                 user=user
             )
         elif callname_function == 'get_is_in_shopping_cart':
-            init_queryset = ShoppingCart.objects.filter(
+            ShoppingCart.objects.filter(
                 recipe=data,
                 user=user
             )
-        if init_queryset.exists():
-            return True
-        return False
 
     def get_is_favorited(self, data):
         return self.get_status_func(data)
@@ -183,7 +178,6 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         context = self.context['request']
-        ingredients = validated_data.pop('recipe_ingredients')
         recipe = Recipe.objects.create(
                 **validated_data,
                 author=self.context.get('request').user
@@ -206,7 +200,6 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         context = self.context['request']
-        ingredients = validated_data.pop('recipe_ingredients')
         tags_set = context.data['tags']
         recipe = instance
         instance.name = validated_data.get('name', instance.name)

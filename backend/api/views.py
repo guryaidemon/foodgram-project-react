@@ -48,7 +48,7 @@ class CustomUserViewSet(UserViewSet):
         if request.method == 'GET':
             subscribed = (Follow.objects.filter(
                 author=followed, user=follower).exists()
-            )
+                          )
             if subscribed is True:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
             Follow.objects.get_or_create(

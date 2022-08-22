@@ -2,7 +2,7 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from backend.users.models import CustomUser, Follow
+from users.models import CustomUser, Follow
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):

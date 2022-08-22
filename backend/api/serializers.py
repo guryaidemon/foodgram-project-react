@@ -169,6 +169,8 @@ class RecipeSerializer(serializers.ModelSerializer):
                 recipe=data,
                 user=user
             )
+        else:
+            return False
 
     def get_is_favorited(self, data):
         return self.get_status_func(data)

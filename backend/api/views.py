@@ -41,8 +41,8 @@ class CustomUserViewSet(UserViewSet):
         methods=['GET', 'DELETE'],
         permission_classes=[IsAuthenticated]
     )
-    def subscribe(self, request, id):
-        followed = get_object_or_404(CustomUser, id=id)
+    def subscribe(self, request, pk):
+        followed = get_object_or_404(CustomUser, id=pk)
         follower = request.user
 
         if request.method == 'GET':
@@ -166,10 +166,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=[IsAuthenticated]
     )
     def download_shopping_cart(self, request):
-        try:
-            return get_shopping_list(request)
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        # try:
+        return get_shopping_list(request)
+        # except:
+        #     return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class IngredientsViewSet(viewsets.ModelViewSet):

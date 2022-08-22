@@ -46,9 +46,12 @@ class CustomUserViewSet(UserViewSet):
         follower = request.user
 
         if request.method == 'GET':
-            subscribed = (Follow.objects.filter(
-                author=followed, user=follower).exists()
-                          )
+            subscribed = (
+                Follow.objects.filter(
+                    author=followed,
+                    user=follower
+                ).exists()
+            )
             if subscribed is True:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
             Follow.objects.get_or_create(
@@ -139,7 +142,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         user = request.user
         if request.method == 'GET':
             recipe, created = ShoppingCart.objects.get_or_create(
-                user=user, recipe=recipe
+                user=user,
+                recipe=recipe
             )
             if created is True:
                 serializer = ShoppingCartSerializer()

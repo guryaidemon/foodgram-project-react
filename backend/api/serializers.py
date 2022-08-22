@@ -160,12 +160,12 @@ class RecipeSerializer(serializers.ModelSerializer):
         user = self.context.get('request').user
         callname_function = format(traceback.extract_stack()[-2][2])
         if callname_function == 'get_is_favorited':
-            FavoriteRecipe.objects.filter(
+            return FavoriteRecipe.objects.filter(
                 recipe=data.id,
                 user=user
             )
         elif callname_function == 'get_is_in_shopping_cart':
-            ShoppingCart.objects.filter(
+            return ShoppingCart.objects.filter(
                 recipe=data,
                 user=user
             )
@@ -179,8 +179,8 @@ class RecipeSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         context = self.context['request']
         recipe = Recipe.objects.create(
-                **validated_data,
-                author=self.context.get('request').user
+            **validated_data,
+            author=self.context.get('request').user
         )
         tags_set = context.data['tags']
         for tag in tags_set:

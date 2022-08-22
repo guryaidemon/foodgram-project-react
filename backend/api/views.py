@@ -12,8 +12,9 @@ from rest_framework.serializers import ListSerializer
 from api.permissions import AuthorOrReadOnly
 from api.serializers import (CustomUserSerializer, FavoritedSerializer,
                              IngredientSerializer, RecipeSerializer,
-                             ShoppingCartSerializer,  TagSerializer,
+                             ShoppingCartSerializer, TagSerializer,
                              UserSubscribeSerializer)
+from api.services import get_shopping_list
 from recipes.filters import RecipeFilter
 from recipes.models import (FavoriteRecipe, Ingredient,
                             Recipe, ShoppingCart, Tag)
@@ -157,7 +158,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             ).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
-
 
     @action(
         detail=False,

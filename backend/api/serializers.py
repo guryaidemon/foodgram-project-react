@@ -1,11 +1,12 @@
 import traceback
-from drf_extra_fields.fields import Base64ImageField
 from djoser.serializers import (
     UserCreateSerializer as BaseUserRegistrationSerializer
 )
+from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers, validators
 
-from recipes.models import Recipe, FavoriteRecipe, Ingredient, IngredientsRecipe, Tag, TagsRecipe, ShoppingCart
+from recipes.models import (FavoriteRecipe, Ingredient, IngredientsRecipe,
+                            Recipe, ShoppingCart, Tag, TagsRecipe)
 from users.mixins import IsSubscribedMixin
 from users.models import CustomUser, Follow
 

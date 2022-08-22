@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from foodgram import settings
 from recipes.models import (Ingredient, IngredientsRecipe,
                             Recipe, Tag, TagsRecipe)
 
@@ -18,7 +19,7 @@ class RecipesAdmin(admin.ModelAdmin):
     list_display = ('name', 'author', 'count_recipes_favorite')
     list_filter = ('name', 'author', 'tags')
     search_fields = ('name', 'author', 'tags')
-    empty_value_display = "-пусто-"
+    empty_value_display = settings.EMPTY
     inlines = [
         TagsInline, IngredientsInline
     ]

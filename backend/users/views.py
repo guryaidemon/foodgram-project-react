@@ -6,11 +6,11 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from backend.users.models import CustomUser, Follow
+from users.models import CustomUser, Follow
 
 
 class CustomUserViewSet(UserViewSet):
-    pagination_class = LimitPageNumberPagination
+    # pagination_class = LimitPageNumberPagination
 
     @action(detail=True, permission_classes=[IsAuthenticated])
     def subscribe(self, request, id=None):

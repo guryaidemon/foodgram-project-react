@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from backend.foodgram import settings
-from backend.users.models import CustomUser, Follow
+from foodgram import settings
+from users.models import CustomUser, Follow
 
 
 class UsersAdmin(admin.ModelAdmin):

@@ -19,7 +19,7 @@ ROLE_CHOICES = [
 ]
 
 
-class CustomUser(AbstractUser):
+class User(AbstractUser):
     username_validator = UsernameValidator()
     username = models.CharField(
         'Логин',
@@ -78,14 +78,14 @@ class CustomUser(AbstractUser):
 
 class Follow(models.Model):
     user = models.ForeignKey(
-        CustomUser,
+        User,
         on_delete=models.CASCADE,
         related_name='follower',
         verbose_name='Подписчик',
         help_text='Подписчик на автора рецепта'
     )
     author = models.ForeignKey(
-        CustomUser,
+        User,
         on_delete=models.CASCADE,
         related_name='followed',
         verbose_name='Автор',

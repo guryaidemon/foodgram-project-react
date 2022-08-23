@@ -1,7 +1,7 @@
 from django.core.validators import MinValueValidator
 from django.db import models
 
-from users.models import CustomUser
+from users.models import User
 
 
 class Tag(models.Model):
@@ -58,7 +58,7 @@ class Recipe(models.Model):
         help_text='Картинка рецепта',
     )
     author = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name='recipes',
+        User, on_delete=models.CASCADE, related_name='recipes',
         verbose_name='recipe author', help_text='Автор рецепта',
     )
     text = models.TextField(
@@ -125,7 +125,7 @@ class TagsRecipe(models.Model):
 
 class FavoriteRecipe(models.Model):
     user = models.ForeignKey(
-        CustomUser,
+        User,
         on_delete=models.CASCADE,
         related_name='favorite_recipes'
     )
@@ -148,7 +148,7 @@ class FavoriteRecipe(models.Model):
 
 class ShoppingCart(models.Model):
     user = models.ForeignKey(
-        CustomUser,
+        User,
         on_delete=models.CASCADE,
         related_name='shopping_cart'
     )

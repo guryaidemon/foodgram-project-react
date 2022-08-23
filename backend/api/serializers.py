@@ -8,12 +8,12 @@ from rest_framework import serializers, validators
 from recipes.models import (FavoriteRecipe, Ingredient, IngredientsRecipe,
                             Recipe, ShoppingCart, Tag, TagsRecipe)
 from users.mixins import IsSubscribedMixin
-from users.models import CustomUser, Follow
+from users.models import User, Follow
 
 
 class UserRegistrationSerializer(BaseUserRegistrationSerializer):
     class Meta(BaseUserRegistrationSerializer.Meta):
-        model = CustomUser
+        model = User
         fields = ('email', 'id', 'username', 'first_name',
                   'last_name', 'password')
 
@@ -23,7 +23,7 @@ class UserListSerializer(serializers.ModelSerializer, IsSubscribedMixin):
         required=True,
         validators=[
             validators.UniqueValidator(
-                queryset=CustomUser.objects.all()
+                queryset=User.objects.all()
             )
         ]
     )
@@ -31,7 +31,7 @@ class UserListSerializer(serializers.ModelSerializer, IsSubscribedMixin):
     class Meta:
         fields = ('email', 'id', 'username', 'first_name',
                   'last_name', 'is_subscribed')
-        model = CustomUser
+        model = User
 
 
 class UserSubscribeSerializer(serializers.ModelSerializer, IsSubscribedMixin):
@@ -41,13 +41,13 @@ class UserSubscribeSerializer(serializers.ModelSerializer, IsSubscribedMixin):
         required=True,
         validators=[
             validators.UniqueValidator(
-                queryset=CustomUser.objects.all()
+                queryset=User.objects.all()
             )
         ]
     )
 
     class Meta:
-        model = CustomUser
+        model = User
         fields = ('email', 'id', 'username', 'first_name', 'last_name',
                   'recipes', 'recipes_count', 'is_subscribed')
 
@@ -82,7 +82,7 @@ class UserSubscribeSerializer(serializers.ModelSerializer, IsSubscribedMixin):
 class AuthorSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = CustomUser
+        model = User
         fields = ('email', 'id', 'username', 'first_name', 'last_name')
 
 

@@ -1,8 +1,13 @@
 from django.contrib import admin
 
 from foodgram import settings
-from recipes.models import (Ingredient, IngredientsRecipe,
-                            Recipe, Tag, TagsRecipe)
+from recipes.models import (
+    Ingredient,
+    IngredientsRecipe,
+    Recipe,
+    Tag,
+    TagsRecipe
+)
 
 
 class IngredientsInline(admin.TabularInline):
@@ -21,7 +26,8 @@ class RecipesAdmin(admin.ModelAdmin):
     search_fields = ('name', 'author', 'tags')
     empty_value_display = settings.EMPTY
     inlines = [
-        TagsInline, IngredientsInline
+        TagsInline,
+        IngredientsInline
     ]
     readonly_fields = ['count_recipes_favorite']
 

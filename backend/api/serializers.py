@@ -18,7 +18,7 @@ class UserRegistrationSerializer(BaseUserRegistrationSerializer):
                   'last_name', 'password')
 
 
-class CustomUserSerializer(serializers.ModelSerializer, IsSubscribedMixin):
+class UserListSerializer(serializers.ModelSerializer, IsSubscribedMixin):
     username = serializers.CharField(
         required=True,
         validators=[

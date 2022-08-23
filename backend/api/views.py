@@ -16,7 +16,7 @@ from rest_framework.serializers import ListSerializer
 from api.mixins import PermissionAndPaginationMixin
 from api.permissions import AuthorOrReadOnly
 from api.serializers import (
-    CustomUserSerializer,
+    UserListSerializer,
     FavoritedSerializer,
     IngredientSerializer,
     RecipeSerializer,
@@ -38,9 +38,9 @@ from users.models import CustomUser, Follow
 User = get_user_model()
 
 
-class CustomUserViewSet(UserViewSet):
-    queryset = CustomUser.objects.all()
-    serializer_class = CustomUserSerializer
+class UsersViewSet(UserViewSet):
+
+    serializer_class = UserListSerializer
 
     def get_permissions(self):
         if self.action == 'create':

@@ -1,4 +1,6 @@
 import traceback
+
+from django.contrib.auth import get_user_model
 from djoser.serializers import (
     UserCreateSerializer as BaseUserRegistrationSerializer
 )
@@ -15,7 +17,9 @@ from recipes.models import (
     TagsRecipe
 )
 from users.mixins import IsSubscribedMixin
-from users.models import User, Follow
+from users.models import Follow
+
+User = get_user_model()
 
 
 class UserRegistrationSerializer(BaseUserRegistrationSerializer):
@@ -155,9 +159,7 @@ class IngredientsRecipeSerializer(serializers.ModelSerializer):
 
 
 class TagSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(
-        required=True
-    )
+    name = serializers.CharField(required=True)
     slug = serializers.SlugField()
 
     class Meta:
@@ -167,9 +169,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(
-        required=True
-    )
+    name = serializers.CharField(required=True)
     author = AuthorSerializer(read_only=True)
     tags = TagSerializer(
         read_only=True,
@@ -307,7 +307,12 @@ class FavoritedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FavoriteRecipe
-        fields = ('id', 'cooking_time', 'name', 'image')
+        fields = (
+            'id',
+            'cooking_time',
+            'name',
+            'image'
+        )
 
 
 class ShoppingCartSerializer(serializers.ModelSerializer):

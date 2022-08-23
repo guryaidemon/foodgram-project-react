@@ -5,8 +5,15 @@ from djoser.serializers import (
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers, validators
 
-from recipes.models import (FavoriteRecipe, Ingredient, IngredientsRecipe,
-                            Recipe, ShoppingCart, Tag, TagsRecipe)
+from recipes.models import (
+    FavoriteRecipe,
+    Ingredient,
+    IngredientsRecipe,
+    Recipe,
+    ShoppingCart,
+    Tag,
+    TagsRecipe
+)
 from users.mixins import IsSubscribedMixin
 from users.models import User, Follow
 
@@ -14,8 +21,14 @@ from users.models import User, Follow
 class UserRegistrationSerializer(BaseUserRegistrationSerializer):
     class Meta(BaseUserRegistrationSerializer.Meta):
         model = User
-        fields = ('email', 'id', 'username', 'first_name',
-                  'last_name', 'password')
+        fields = (
+            'email',
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'password'
+        )
 
 
 class UserListSerializer(serializers.ModelSerializer, IsSubscribedMixin):
@@ -29,8 +42,14 @@ class UserListSerializer(serializers.ModelSerializer, IsSubscribedMixin):
     )
 
     class Meta:
-        fields = ('email', 'id', 'username', 'first_name',
-                  'last_name', 'is_subscribed')
+        fields = (
+            'email',
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'is_subscribed'
+        )
         model = User
 
 
@@ -48,8 +67,16 @@ class UserSubscribeSerializer(serializers.ModelSerializer, IsSubscribedMixin):
 
     class Meta:
         model = User
-        fields = ('email', 'id', 'username', 'first_name', 'last_name',
-                  'recipes', 'recipes_count', 'is_subscribed')
+        fields = (
+            'email',
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'recipes',
+            'recipes_count',
+            'is_subscribed'
+        )
 
     def validate(self, data):
         author = data['followed']
@@ -83,14 +110,24 @@ class AuthorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email', 'id', 'username', 'first_name', 'last_name')
+        fields = (
+            'email',
+            'id',
+            'username',
+            'first_name',
+            'last_name'
+        )
 
 
 class IngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ingredient
-        fields = ('id', 'name', 'measurement_unit')
+        fields = (
+            'id',
+            'name',
+            'measurement_unit'
+        )
 
 
 class IngredientsRecipeSerializer(serializers.ModelSerializer):
@@ -109,7 +146,12 @@ class IngredientsRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IngredientsRecipe
-        fields = ('id', 'name', 'measurement_unit', 'amount')
+        fields = (
+            'id',
+            'name',
+            'measurement_unit',
+            'amount'
+        )
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -288,4 +330,9 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ShoppingCart
-        fields = ('id', 'cooking_time', 'name', 'image')
+        fields = (
+            'id',
+            'cooking_time',
+            'name',
+            'image'
+        )

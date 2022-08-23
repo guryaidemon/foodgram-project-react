@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from foodgram import settings
-from users.models import CustomUser, Follow
+from users.models import User, Follow
 
 
 class UsersAdmin(admin.ModelAdmin):
@@ -39,5 +39,5 @@ class FollowsAdmin(admin.ModelAdmin):
     empty_value_display = settings.EMPTY
 
 
-admin.site.register(CustomUser, UsersAdmin)
+admin.site.register(User, UsersAdmin)
 admin.site.register(Follow, FollowsAdmin)

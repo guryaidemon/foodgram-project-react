@@ -1,4 +1,6 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import make_password
+from django.db.models import Exists, OuterRef, Value
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
 from rest_framework import status, viewsets, filters
@@ -41,75 +43,43 @@ User = get_user_model()
 class UsersViewSet(UserViewSet):
 
     serializer_class = UserListSerializer
+    permission_classes = (IsAuthenticated,)
 
-    def get_permissions(self):
-        if self.action == 'create':
-            permission_classes = [IsAuthenticated]
-        elif self.action == 'actioned':
-            permission_classes = [IsAuthenticated]
-        else:
-            permission_classes = [AllowAny]
-        return [permission() for permission in permission_classes]
+    def get_queryset(self):
+        return User.objects.annotate(
+            is_subscribed=Exists(
+                self.request.user.follower.filter(
+                    author=OuterRef('id')
+                )
+            )
+        ).prefetch_related(
+            'follower', 'following'
+        ) if self.request.user.is_authenticated else User.objects.annotate(
+            is_subscribed=Value(False)
+        )
 
-    @action(
-        detail=True,
-        methods=['GET', 'DELETE'],
-        permission_classes=[IsAuthenticated]
-    )
-    def subscribe(self, request, pk):
-        followed = get_object_or_404(CustomUser, id=pk)
-        follower = request.user
+    def get_serializer_class(self):
+        if self.request.method.lower() == 'post':
+            return UserCreateSerializer
+        return UserListSerializer
 
-        if request.method == 'GET':
-            subscribed = (
-                Follow.objects.filter(
-                    author=followed,
-                    user=follower
-                ).exists()
-            )
-            if subscribed is True:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
-            Follow.objects.get_or_create(
-                user=follower,
-                author=followed
-            )
-            serializer = UserSubscribeSerializer(
-                context=self.get_serializer_context()
-            )
-            return Response(serializer.to_representation(
-                instance=followed),
-                status=status.HTTP_201_CREATED
-            )
-        if request.method == 'DELETE':
-            Follow.objects.filter(
-                user=follower,
-                author=followed
-            ).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+    def perform_create(self, serializer):
+        password = make_password(self.request.data['password'])
+        serializer.save(password=password)
 
     @action(
-        detail=True,
-        methods=['GET'],
-        permission_classes=[IsAuthenticated],
-        url_path='subscriptions'
+        detail=False,
+        permission_classes=(IsAuthenticated,)
     )
     def subscriptions(self, request):
-        current_user = request.user
-        followed_list = CustomUser.objects.filter(followed__user=current_user)
-        paginator = PageNumberPagination()
-        paginator.page_size_query_param = 'limit'
-        authors = paginator.paginate_queryset(
-            followed_list,
-            request=request
+        user = request.user
+        queryset = Follow.objects.filter(user=user)
+        pages = self.paginate_queryset(queryset)
+        serializer = UserSubscribeSerializer(
+            pages, many=True,
+            context={'request': request}
         )
-        serializer = ListSerializer(
-            child=UserSubscribeSerializer(),
-            context=self.get_serializer_context()
-        )
-        return paginator.get_paginated_response(
-            serializer.to_representation(authors)
-        )
+        return self.get_paginated_response(serializer.data)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):

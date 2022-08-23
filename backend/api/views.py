@@ -12,6 +12,7 @@ from rest_framework.permissions import (
 from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer
 
+from api.mixins import PermissionAndPaginationMixin
 from api.permissions import AuthorOrReadOnly
 from api.serializers import (
     CustomUserSerializer,
@@ -189,17 +190,21 @@ class RecipeViewSet(viewsets.ModelViewSet):
         #     return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class IngredientsViewSet(viewsets.ModelViewSet):
-    pagination_class = None
+class IngredientsViewSet(
+    PermissionAndPaginationMixin,
+    viewsets.ModelViewSet
+):
+
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('^name',)
 
 
-class TagsViewSet(viewsets.ModelViewSet):
-    pagination_class = None
+class TagsViewSet(
+    PermissionAndPaginationMixin,
+    viewsets.ModelViewSet
+):
+
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]

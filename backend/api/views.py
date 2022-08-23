@@ -4,20 +4,33 @@ from rest_framework import status, viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import (AllowAny, IsAuthenticated,
-                                        IsAuthenticatedOrReadOnly)
+from rest_framework.permissions import (
+    AllowAny,
+    IsAuthenticated,
+    IsAuthenticatedOrReadOnly
+)
 from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer
 
 from api.permissions import AuthorOrReadOnly
-from api.serializers import (CustomUserSerializer, FavoritedSerializer,
-                             IngredientSerializer, RecipeSerializer,
-                             ShoppingCartSerializer, TagSerializer,
-                             UserSubscribeSerializer)
+from api.serializers import (
+    CustomUserSerializer,
+    FavoritedSerializer,
+    IngredientSerializer,
+    RecipeSerializer,
+    ShoppingCartSerializer,
+    TagSerializer,
+    UserSubscribeSerializer
+)
 from api.services import get_shopping_list
 from recipes.filters import RecipeFilter
-from recipes.models import (FavoriteRecipe, Ingredient,
-                            Recipe, ShoppingCart, Tag)
+from recipes.models import (
+    FavoriteRecipe,
+    Ingredient,
+    Recipe,
+    ShoppingCart,
+    Tag
+)
 from users.models import CustomUser, Follow
 
 User = CustomUser()

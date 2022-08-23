@@ -51,12 +51,14 @@
     ```
     sudo docker-compose exec backend python manage.py migrate --noinput
     ```
-- Команда для заполнения базы начальными данными (необязательно):  
-    ```
-    docker-compose exec web python manage.py loaddata fixtures.json
-    ```
 - Создать суперпользователя Django:
    ```
    sudo docker-compose exec backend python manage.py createsuperuser
    ```
+- Дополнительно можно наполнить DB ингредиентами и тэгами::  
+    ```
+    sudo docker-compose exec backend python manage.py load_tags
+    sudo docker-compose exec backend python manage.py load_ingrs
+    ```
+
 - Проект будет доступен по вашему IP

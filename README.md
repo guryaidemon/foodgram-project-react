@@ -22,7 +22,7 @@
   ```
 * Локально отредактируйте файл nginx.conf и в строке server_name впишите свой IP
   * Скопируйте файлы docker-compose.yml и nginx.conf из репозитория на сервер:
-   ```
+  ```
     scp docker-compose.yml <username>@<host>:/home/<username>/docker-compose.yml
     scp nginx.conf <username>@<host>:/home/<username>/nginx.conf
   ```
@@ -43,22 +43,23 @@
     sudo docker-compose up -d --build
   ```
 * После успешной сборки на сервере выполните команды (только после первого деплоя):
+
 - Соберите статические файлы:
-    ```
+  ```
     sudo docker-compose exec backend python manage.py collectstatic --noinput
-    ```
+  ```
 - Примените миграции:
-    ```
+  ```
     sudo docker-compose exec backend python manage.py migrate --noinput
-    ```
+  ```
 - Создать суперпользователя Django:
-   ```
-   sudo docker-compose exec backend python manage.py createsuperuser
-   ```
+  ```
+    sudo docker-compose exec backend python manage.py createsuperuser
+  ```
 - Дополнительно можно наполнить DB ингредиентами и тэгами::  
-    ```
+  ```
     sudo docker-compose exec backend python manage.py load_tags
     sudo docker-compose exec backend python manage.py load_ingrs
-    ```
+  ```
 
 - Проект будет доступен по вашему IP

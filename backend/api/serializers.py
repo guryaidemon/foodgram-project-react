@@ -22,7 +22,7 @@ from users.models import Follow
 User = get_user_model()
 
 
-class UserRegistrationSerializer(BaseUserRegistrationSerializer):
+class UserCreateSerializer(BaseUserRegistrationSerializer):
     class Meta(BaseUserRegistrationSerializer.Meta):
         model = User
         fields = (

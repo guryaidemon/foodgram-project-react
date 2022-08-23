@@ -18,12 +18,13 @@ from rest_framework.serializers import ListSerializer
 from api.mixins import PermissionAndPaginationMixin
 from api.permissions import AuthorOrReadOnly
 from api.serializers import (
-    UserListSerializer,
     FavoritedSerializer,
     IngredientSerializer,
     RecipeSerializer,
     ShoppingCartSerializer,
     TagSerializer,
+    UserCreateSerializer,
+    UserListSerializer,
     UserSubscribeSerializer
 )
 from api.services import get_shopping_list

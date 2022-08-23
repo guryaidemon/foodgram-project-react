@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
 from rest_framework import status, viewsets, filters
@@ -34,7 +35,7 @@ from recipes.models import (
 )
 from users.models import CustomUser, Follow
 
-User = CustomUser()
+User = get_user_model()
 
 
 class CustomUserViewSet(UserViewSet):

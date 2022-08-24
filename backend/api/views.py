@@ -156,10 +156,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=[IsAuthenticated]
     )
     def download_shopping_cart(self, request):
-        # try:
         return get_shopping_list(request)
-        # except:
-        #     return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class IngredientsViewSet(

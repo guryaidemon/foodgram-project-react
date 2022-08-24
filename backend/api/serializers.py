@@ -59,7 +59,7 @@ class UserListSerializer(serializers.ModelSerializer, IsSubscribedMixin):
 
 class UserSubscribeSerializer(serializers.ModelSerializer, IsSubscribedMixin):
     recipes = serializers.SerializerMethodField()
-    recipes_count = serializers.SerializerMethodField('get_recipes_count')
+    recipes_count = serializers.SerializerMethodField()
     username = serializers.CharField(
         required=True,
         validators=[
@@ -96,18 +96,17 @@ class UserSubscribeSerializer(serializers.ModelSerializer, IsSubscribedMixin):
         subscribe.save()
         return subscribe
 
-    @staticmethod
-    def get_recipes_count(data):
-        return Recipe.objects.filter(author=data).count()
-
-    def get_recipes(self, data):
+    def get_recipes(self, obj):
         recipes_limit = self.context.get('request').GET.get('recipes_limit')
-        recipes = (
-            data.recipes.all()[:int(recipes_limit)]
-            if recipes_limit else data.recipes
-        )
+        if recipes_limit is None:
+            recipes = obj.recipes.all()
+        else:
+            recipes = obj.recipes.all()[:int(recipes_limit)]
         serializer = serializers.ListSerializer(child=RecipeSerializer())
         return serializer.to_representation(recipes)
+
+    def get_recipes_count(self, obj):
+        return obj.author.recipes.count()
 
 
 class AuthorSerializer(serializers.ModelSerializer):
@@ -127,11 +126,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ingredient
-        fields = (
-            'id',
-            'name',
-            'measurement_unit'
-        )
+        fields = '__all__'
 
 
 class IngredientsRecipeSerializer(serializers.ModelSerializer):

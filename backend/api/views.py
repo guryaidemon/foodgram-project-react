@@ -119,8 +119,6 @@ class UserListViewSet(UserViewSet):
                 )
             subscribe.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class TagsViewSet(RetrieveListViewSet):
@@ -184,9 +182,6 @@ class RecipesViewSet(viewsets.ModelViewSet):
                 )
             in_favorite.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
 
     @action(
         detail=True,
@@ -222,9 +217,6 @@ class RecipesViewSet(viewsets.ModelViewSet):
                 )
             in_shopping_cart.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
 
     @action(
         methods=['get'],

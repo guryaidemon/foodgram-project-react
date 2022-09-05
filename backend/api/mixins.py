@@ -10,4 +10,3 @@ class RetrieveListViewSet(
 ):
     permission_classes = (IsAuthorAdminOrReadOnly,)
     pagination_class = None
-

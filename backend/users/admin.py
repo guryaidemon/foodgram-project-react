@@ -1,43 +1,28 @@
 from django.contrib import admin
 
 from foodgram import settings
-from users.models import User, Follow
+from users.models import Follow, User
 
 
-class UsersAdmin(admin.ModelAdmin):
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    """Представляет модель User в интерфейсе администратора."""
     list_display = (
+        'id',
         'username',
-        'password',
         'first_name',
         'last_name',
-        'email'
+        'email',
+        'password'
     )
-    list_filter = (
-        'username',
-        'email'
-    )
-    search_fields = (
-        'username',
-        'email'
-    )
+    list_filter = ('email', 'username', )
     empty_value_display = settings.EMPTY
 
 
-class FollowsAdmin(admin.ModelAdmin):
-    list_display = (
-        'user',
-        'author'
-    )
-    list_filter = (
-        'user',
-        'author'
-    )
-    search_fields = (
-        'user',
-        'author'
-    )
+@admin.register(Follow)
+class FollowAdmin(admin.ModelAdmin):
+    """Представляет модель Follow в интерфейсе администратора."""
+    list_display = ('id', 'user', 'author')
+    search_fields = ('user',)
+    list_filter = ('user', )
     empty_value_display = settings.EMPTY
-
-
-admin.site.register(User, UsersAdmin)
-admin.site.register(Follow, FollowsAdmin)

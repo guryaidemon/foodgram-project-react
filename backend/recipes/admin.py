@@ -1,60 +1,60 @@
 from django.contrib import admin
 
 from foodgram import settings
-from recipes.models import (
-    Ingredient,
-    IngredientsRecipe,
-    Recipe,
-    Tag,
-    TagsRecipe
-)
+from .models import (
+    Favorite, Ingredient, IngredientRecipe, Recipe,
+    ShoppingCart, Tag)
 
 
-class IngredientsInline(admin.TabularInline):
-    model = IngredientsRecipe
-    extra = 1
-
-
-class TagsInline(admin.TabularInline):
-    model = TagsRecipe
-    extra = 1
-
-
-class RecipesAdmin(admin.ModelAdmin):
-    list_display = ('name', 'author', 'count_recipes_favorite')
-    list_filter = ('name', 'author', 'tags')
-    search_fields = ('name', 'author', 'tags')
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    """Представляет модель Tag в интерфейсе администратора."""
+    list_display = ('id', 'name', 'color', 'slug')
+    search_fields = ('name',)
+    list_filter = ('name',)
     empty_value_display = settings.EMPTY
-    inlines = [
-        TagsInline,
-        IngredientsInline
-    ]
-    readonly_fields = ['count_recipes_favorite']
-
-    def count_recipes_favorite(self, obj):
-        return obj.favorite_recipes.count()
-
-    count_recipes_favorite.short_description = 'Популярность'
 
 
-class TagsAdmin(admin.ModelAdmin):
-    inlines = [
-        TagsInline
-    ]
-    list_display = ('name', 'color')
-    list_filter = ('name',)
+class IngredientRecipeInline(admin.TabularInline):
+    """Представляет модель IngredientRecipe в интерфейсе администратора."""
+    model = IngredientRecipe
+
+
+@admin.register(Ingredient)
+class IngredientAdmin(admin.ModelAdmin):
+    """Представляет модель Ingredient в интерфейсе администратора."""
+    list_display = ('id', 'name', 'measurement_unit')
     search_fields = ('name',)
-
-
-class IngredientsAdmin(admin.ModelAdmin):
-    inlines = [
-        IngredientsInline
-    ]
-    list_display = ('name', 'measurement_unit')
     list_filter = ('name',)
-    search_fields = ('name',)
+    inlines = (IngredientRecipeInline,)
+    empty_value_display = settings.EMPTY
 
 
-admin.site.register(Recipe, RecipesAdmin)
-admin.site.register(Tag, TagsAdmin)
-admin.site.register(Ingredient, IngredientsAdmin)
+@admin.register(Recipe)
+class RecipeAdmin(admin.ModelAdmin):
+    """Представляет модель Recipe в интерфейсе администратора."""
+    list_display = ('id', 'name', 'author')
+    search_fields = ('author', 'name', 'tags')
+    inlines = (IngredientRecipeInline,)
+    empty_value_display = settings.EMPTY
+
+    def is_favorited(self, obj):
+        return Favorite.objects.filter(recipe=obj).count()
+
+
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    """Представляет модель Favorite в интерфейсе администратора."""
+    list_display = ('id', 'user', 'recipe')
+    search_fields = ('user',)
+    list_filter = ('user',)
+    empty_value_display = settings.EMPTY
+
+
+@admin.register(ShoppingCart)
+class ShoppingCartAdmin(admin.ModelAdmin):
+    """Представляет модель ShoppingCart в интерфейсе администратора."""
+    list_display = ('id', 'user', 'recipe')
+    search_fields = ('user',)
+    list_filter = ('user',)
+    empty_value_display = settings.EMPTY

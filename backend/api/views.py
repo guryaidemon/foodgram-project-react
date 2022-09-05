@@ -173,7 +173,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
                     data=serializer.data,
                     status=status.HTTP_201_CREATED
                 )
-        elif request.method == 'DELETE':
+        if request.method == 'DELETE':
             if not in_favorite:
                 data = {'errors': 'Такого рецепта нет в избранных.'}
                 return Response(
@@ -208,7 +208,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
                     data=serializer.data,
                     status=status.HTTP_201_CREATED
                 )
-        elif request.method == 'DELETE':
+        if request.method == 'DELETE':
             if not in_shopping_cart:
                 data = {'errors': 'Такой рецепта нет в списке покупок.'}
                 return Response(

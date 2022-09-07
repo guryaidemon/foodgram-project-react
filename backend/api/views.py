@@ -18,6 +18,7 @@ from users.models import Follow
 
 from api.filters import IngredientFilter, RecipeFilter
 from api.mixins import RetrieveListViewSet
+from api.pagination import FollowPagination
 from api.permissions import IsAuthorAdminOrReadOnly
 from api.serializers import (
     FavoriteSerializer,
@@ -65,7 +66,8 @@ class UserListViewSet(UserViewSet):
     @action(
         detail=False,
         methods=['get'],
-        permission_classes=(IsAuthenticated,)
+        permission_classes=(IsAuthenticated,),
+        pagination_class=FollowPagination
     )
     def subscriptions(self, request):
         user = request.user
@@ -139,7 +141,6 @@ class RecipesViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthorAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend, )
     filterset_class = RecipeFilter
-    http_method_names = ('get', 'post', 'put', 'patch', 'delete')
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -149,9 +150,6 @@ class RecipesViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
-    def perform_update(self, serializer):
-        serializer.save()
-
     @action(
         methods=['post', 'delete'],
         detail=True,
@@ -160,9 +158,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
     def favorite(self, request, pk=None):
         user = self.request.user
         recipe = get_object_or_404(Recipe, pk=pk)
-        in_favorite = Favorite.objects.filter(
-            user=user, recipe=recipe
-        )
+        in_favorite = Favorite.objects.filter(user=user, recipe=recipe)
         if user.is_anonymous:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         if request.method == 'POST':

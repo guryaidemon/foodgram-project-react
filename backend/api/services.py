@@ -18,8 +18,10 @@ def get_send_file(user):
     ).values(
         'ingredient__name', 'ingredient__measurement_unit'
     ).annotate(ingredient_amount=Sum('amount')).values_list(
-        'ingredient__name', 'ingredient__measurement_unit',
-        'ingredient_amount')
+        'ingredient__name',
+        'ingredient__measurement_unit',
+        'ingredient_amount'
+    )
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
     response.write(u'\ufeff'.encode('utf8'))

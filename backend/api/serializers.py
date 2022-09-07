@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from django.contrib.auth import get_user_model
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
@@ -96,7 +98,8 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         return Follow.objects.filter(
-            user=obj.user, author=obj.author
+            user=obj.user,
+            author=obj.author
         ).exists()
 
     def get_recipes(self, obj):
@@ -161,11 +164,11 @@ class IngredientRecipeListSerializer(serializers.ModelSerializer):
 
 
 class IngredientRecipeCreateSerializer(serializers.ModelSerializer):
-    amount = serializers.IntegerField(write_only=True)
-    id = serializers.IntegerField(write_only=True)
+    id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
+    amount = serializers.IntegerField()
 
     class Meta:
-        model = Ingredient
+        model = IngredientRecipe
         fields = (
             'id',
             'amount'
@@ -184,6 +187,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = (
+            'id',
             'ingredients',
             'tags',
             'image',
@@ -194,50 +198,56 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         )
 
     def validate_ingredients(self, ingredients):
-        uniq_ingredients = {}
+        uniq_ingredients = defaultdict(int)
         for ingredient in ingredients:
             if int(ingredient['amount']) < 1:
                 raise serializers.ValidationError(
-                    'Количество ингредиента должно быть больше 0.')
-            uniq_ingredients[ingredient['id']] = uniq_ingredients.get(
-                ingredient['id'], 0) + ingredient['amount']
+                    'Количество ингредиента должно быть больше 0.'
+                )
+            uniq_ingredients[ingredient['id']] += (ingredient['amount'])
         validated_data = [
-            {'id': key,
-             'amount': value} for key, value in uniq_ingredients.items()]
+            {'id': key, 'amount': value}
+            for key, value in uniq_ingredients.items()
+        ]
         return validated_data
 
     def validate_cooking_time(self, value):
         if int(value) < 1:
             raise serializers.ValidationError(
-                'Время приготовления должно быть больше 0.')
+                'Время приготовления должно быть больше 0.'
+            )
         return value
 
     def create(self, validated_data):
-        tags = validated_data.pop('tags')
         ingredients = validated_data.pop('ingredients')
-        author = self.context.get('request').user
-        recipe = Recipe.objects.create(author=author, **validated_data)
+        tags = validated_data.pop('tags')
+        recipe = Recipe.objects.create(**validated_data)
         obj = [
             IngredientRecipe(
-                ingredient=ing['id'],
                 recipe=recipe,
-                amount=ing['amount']) for ing in ingredients]
+                ingredient=ingredient['id'],
+                amount=ingredient['amount']
+            )
+            for ingredient in ingredients
+        ]
         IngredientRecipe.objects.bulk_create(obj)
         recipe.tags.set(tags)
         return recipe
 
     def update(self, instance, validated_data):
         tags = validated_data.pop('tags', None)
+        ingredients = validated_data.pop('ingredients', None)
+        instance.ingredient_recipe.all().delete()
         if tags is not None:
             instance.tags.set(tags)
-
-        ingredients = validated_data.pop('ingredients', None)
-        instance.recipe_for_ingredient.all().delete()
         obj = [
             IngredientRecipe(
-                ingredient=ing['id'],
                 recipe=instance,
-                amount=ing['amount']) for ing in ingredients]
+                ingredient=ingredient['id'],
+                amount=ingredient['amount']
+            )
+            for ingredient in ingredients
+        ]
         IngredientRecipe.objects.bulk_create(obj)
         return super().update(instance, validated_data)
 

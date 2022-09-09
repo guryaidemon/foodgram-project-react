@@ -18,7 +18,7 @@
   ```
 * Установите docker-compose на сервер:
   ```
-    sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo apt install docker-compose -y
   ```
 * Локально отредактируйте файл nginx.conf и в строке server_name впишите свой IP
   * Скопируйте файлы docker-compose.yml и nginx.conf из репозитория на сервер:

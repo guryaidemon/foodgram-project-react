@@ -198,16 +198,16 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         )
 
     def validate_ingredients(self, ingredients):
-        uniq_ingredients = defaultdict(int)
+        unique_ingredients = defaultdict(int)
         for ingredient in ingredients:
             if int(ingredient['amount']) < 1:
                 raise serializers.ValidationError(
                     'Количество ингредиента должно быть больше 0.'
                 )
-            uniq_ingredients[ingredient['id']] += (ingredient['amount'])
+            unique_ingredients[ingredient['id']] += (ingredient['amount'])
         validated_data = [
             {'id': key, 'amount': value}
-            for key, value in uniq_ingredients.items()
+            for key, value in unique_ingredients.items()
         ]
         return validated_data
 

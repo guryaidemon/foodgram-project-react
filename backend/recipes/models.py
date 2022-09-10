@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 
+from recipes.validators import ColorValidator
+
 User = get_user_model()
 
 
@@ -12,14 +14,18 @@ class Tag(models.Model):
         max_length=200,
         unique=True
     )
+    validate_color = ColorValidator()
     color = models.CharField(
         'Цвет',
+        validators=[validate_color, ],
         max_length=7,
-        unique=True)
+        unique=True
+    )
     slug = models.SlugField(
         'Ссылка',
         max_length=200,
-        unique=True)
+        unique=True
+    )
 
     class Meta:
         ordering = ('name', )

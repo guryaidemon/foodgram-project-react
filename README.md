@@ -4,9 +4,6 @@
 
 http://158.160.1.57/admin/
 
-admin: dima@bumate.ru 
-password: 1qwerty2
-
 http://158.160.1.57/recipes
 
 ## Описание 

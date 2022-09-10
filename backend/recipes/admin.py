@@ -25,7 +25,6 @@ class IngredientAdmin(admin.ModelAdmin):
     """Представляет модель Ingredient в интерфейсе администратора."""
     list_display = ('id', 'name', 'measurement_unit')
     search_fields = ('name',)
-    list_filter = ('name',)
     inlines = (IngredientRecipeInline,)
     empty_value_display = settings.EMPTY
 

@@ -13,8 +13,6 @@ class RecipeFilter(filters.FilterSet):
         to_field_name='slug',
         queryset=Tag.objects.all()
     )
-    # tags = filters.AllValuesMultipleFilter(
-    #     field_name='tags__slug', label='Tags')
     is_favorited = filters.BooleanFilter(
         method='get_favorite', label='Favorited')
     is_in_shopping_cart = filters.BooleanFilter(
